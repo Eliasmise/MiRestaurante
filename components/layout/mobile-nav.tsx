@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { navForRole } from "@/components/layout/nav-items";
+import { navForRole, navLabel } from "@/components/layout/nav-items";
+import type { Locale } from "@/lib/i18n";
 import type { UserRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export function MobileNav({ role }: { role: UserRole }) {
+export function MobileNav({ role, locale }: { role: UserRole; locale: Locale }) {
   const pathname = usePathname();
   const items = navForRole(role);
 
@@ -30,7 +31,7 @@ export function MobileNav({ role }: { role: UserRole }) {
               )}
             >
               <Icon className="h-3.5 w-3.5" />
-              {item.label}
+              {navLabel(item, locale)}
             </Link>
           );
         })}

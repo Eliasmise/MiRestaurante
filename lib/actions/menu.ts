@@ -13,7 +13,7 @@ import {
 export async function upsertMenuCategory(input: unknown) {
   const parsed = menuCategorySchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid category payload" };
+    return { success: false as const, error: "Invalid category payload / Payload de categoría inválido" };
   }
 
   const context = await getUserContextOrThrow();
@@ -43,7 +43,7 @@ export async function upsertMenuCategory(input: unknown) {
 export async function upsertMenuSubcategory(input: unknown) {
   const parsed = menuSubcategorySchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid subcategory payload" };
+    return { success: false as const, error: "Invalid subcategory payload / Payload de subcategoría inválido" };
   }
 
   const context = await getUserContextOrThrow();

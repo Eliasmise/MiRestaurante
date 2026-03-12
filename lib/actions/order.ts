@@ -18,7 +18,7 @@ async function getOrCreateOpenOrder(tableId: string) {
   const supabase = await createClient();
 
   if (!context.restaurantId) {
-    throw new Error("No restaurant selected");
+    throw new Error("No restaurant selected / No hay restaurante seleccionado");
   }
 
   const { data: existing } = await supabase
@@ -115,7 +115,7 @@ export async function addOrderItem(input: unknown) {
     .single();
 
   if (menuError || !menuItem) {
-    return { success: false as const, error: "Menu item not available" };
+    return { success: false as const, error: "Menu item not available / Ítem del menú no disponible" };
   }
 
   const modifierDelta = modifiers.reduce((sum, item) => sum + item.price_delta, 0);
@@ -196,7 +196,7 @@ export async function addOrderItem(input: unknown) {
 export async function sendOrderItemsToKitchen(input: unknown) {
   const parsed = sendToKitchenSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid kitchen request" };
+    return { success: false as const, error: "Invalid kitchen request / Solicitud de cocina inválida" };
   }
 
   const context = await getUserContextOrThrow();
@@ -316,7 +316,7 @@ async function syncOrderAndTableStatus(orderId: string, restaurantId: string, ac
 export async function updateKitchenItemStatus(input: unknown) {
   const parsed = kitchenStatusSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid status payload" };
+    return { success: false as const, error: "Invalid status payload / Payload de estado inválido" };
   }
 
   const context = await getUserContextOrThrow();
@@ -344,7 +344,7 @@ export async function updateKitchenItemStatus(input: unknown) {
     .single();
 
   if (error || !row) {
-    return { success: false as const, error: error?.message ?? "Unable to update item" };
+    return { success: false as const, error: error?.message ?? "Unable to update item / No se pudo actualizar el ítem" };
   }
 
   await syncOrderAndTableStatus(row.order_id, context.restaurantId!, context.userId);
@@ -358,7 +358,7 @@ export async function updateKitchenItemStatus(input: unknown) {
 export async function updateOrderItemQuantity(input: unknown) {
   const parsed = updateItemQuantitySchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid quantity payload" };
+    return { success: false as const, error: "Invalid quantity payload / Payload de cantidad inválido" };
   }
 
   const context = await getUserContextOrThrow();
@@ -375,7 +375,7 @@ export async function updateOrderItemQuantity(input: unknown) {
     .single();
 
   if (!item || item.status !== "draft") {
-    return { success: false as const, error: "Only draft items can be edited" };
+    return { success: false as const, error: "Only draft items can be edited / Solo se pueden editar ítems en borrador" };
   }
 
   const { data: modifiers } = await supabase
@@ -410,7 +410,7 @@ export async function updateOrderItemQuantity(input: unknown) {
 export async function removeOrVoidOrderItem(input: unknown) {
   const parsed = removeItemSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid remove payload" };
+    return { success: false as const, error: "Invalid remove payload / Payload de eliminación inválido" };
   }
 
   const context = await getUserContextOrThrow();
@@ -427,7 +427,7 @@ export async function removeOrVoidOrderItem(input: unknown) {
     .single();
 
   if (!item) {
-    return { success: false as const, error: "Item not found" };
+    return { success: false as const, error: "Item not found / Ítem no encontrado" };
   }
 
   if (item.status === "draft") {
@@ -444,7 +444,7 @@ export async function removeOrVoidOrderItem(input: unknown) {
       .update({
         status: "voided",
         voided_at: new Date().toISOString(),
-        void_reason: reason ?? "Voided",
+        void_reason: reason ?? "Voided / Anulado",
         updated_by: context.userId
       })
       .eq("id", orderItemId)
@@ -473,7 +473,7 @@ export async function removeOrVoidOrderItem(input: unknown) {
 export async function closeOrderWithPayment(input: unknown) {
   const parsed = checkoutSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid checkout payload" };
+    return { success: false as const, error: "Invalid checkout payload / Payload de cobro inválido" };
   }
 
   const context = await getUserContextOrThrow();
@@ -490,11 +490,11 @@ export async function closeOrderWithPayment(input: unknown) {
     .single();
 
   if (orderError || !order) {
-    return { success: false as const, error: "Order not found" };
+    return { success: false as const, error: "Order not found / Pedido no encontrado" };
   }
 
   if (amountPaid + 0.0001 < Number(order.total)) {
-    return { success: false as const, error: "Amount paid cannot be lower than total" };
+    return { success: false as const, error: "Amount paid cannot be lower than total / El monto pagado no puede ser menor al total" };
   }
 
   const now = new Date().toISOString();

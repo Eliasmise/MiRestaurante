@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { tableStatusLabel, type Locale } from "@/lib/i18n";
 import type { OrderItemStatus, OrderStatus, TableStatus } from "@/lib/types";
 
 type Status = TableStatus | OrderStatus | OrderItemStatus;
@@ -23,4 +24,13 @@ const statusMap: Record<Status, { label: string; className: string }> = {
 export function StatusPill({ status }: { status: Status }) {
   const config = statusMap[status];
   return <Badge className={`interactive-elevate ${config.className}`}>{config.label}</Badge>;
+}
+
+export function LocalizedStatusPill({ status, locale }: { status: Status; locale: Locale }) {
+  const config = statusMap[status];
+  return (
+    <Badge className={`interactive-elevate ${config.className}`}>
+      {tableStatusLabel(locale, status)}
+    </Badge>
+  );
 }

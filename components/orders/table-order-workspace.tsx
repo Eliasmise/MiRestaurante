@@ -11,18 +11,20 @@ import {
   sendOrderItemsToKitchen,
   updateOrderItemQuantity
 } from "@/lib/actions/order";
-import { StatusPill } from "@/components/shared/status-pill";
+import { LocalizedStatusPill } from "@/components/shared/status-pill";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { l, type Locale } from "@/lib/i18n";
 import type { OrderItemStatus, TableStatus } from "@/lib/types";
 import { formatMoney } from "@/lib/utils";
 
 export interface OrderWorkspaceProps {
   restaurantId: string;
+  locale: Locale;
   tableId: string;
   table: { table_code: string; display_name: string; status: string };
   order: {
@@ -77,7 +79,8 @@ export function TableOrderWorkspace({
   categories,
   subcategories,
   menuItems,
-  modifierMap
+  modifierMap,
+  locale
 }: OrderWorkspaceProps) {
   const router = useRouter();
 
@@ -132,11 +135,23 @@ export function TableOrderWorkspace({
     for (const group of groups) {
       const selectedCount = group.options.filter((option) => chosenOptions[option.id]).length;
       if (group.is_required && selectedCount < group.min_select) {
-        toast.error(`Select at least ${group.min_select} option(s) for ${group.name}`);
+        toast.error(
+          l(
+            locale,
+            `Select at least ${group.min_select} option(s) for ${group.name}`,
+            `Selecciona al menos ${group.min_select} opción(es) para ${group.name}`
+          )
+        );
         return;
       }
       if (selectedCount > group.max_select) {
-        toast.error(`Select up to ${group.max_select} option(s) for ${group.name}`);
+        toast.error(
+          l(
+            locale,
+            `Select up to ${group.max_select} option(s) for ${group.name}`,
+            `Selecciona hasta ${group.max_select} opción(es) para ${group.name}`
+          )
+        );
         return;
       }
     }
@@ -159,7 +174,7 @@ export function TableOrderWorkspace({
         return;
       }
 
-      toast.success(`${selectedItem.name} added`);
+      toast.success(l(locale, `${selectedItem.name} added`, `${selectedItem.name} agregado`));
       closeDialog();
       router.refresh();
     });
@@ -167,7 +182,7 @@ export function TableOrderWorkspace({
 
   function onSendDraft() {
     if (!order || draftItems.length === 0) {
-      toast.error("No draft items to send");
+      toast.error(l(locale, "No draft items to send", "No hay ítems borrador para enviar"));
       return;
     }
 
@@ -182,7 +197,7 @@ export function TableOrderWorkspace({
         return;
       }
 
-      toast.success("Items sent to kitchen");
+      toast.success(l(locale, "Items sent to kitchen", "Ítems enviados a cocina"));
       router.refresh();
     });
   }
@@ -197,10 +212,13 @@ export function TableOrderWorkspace({
 
   function onRemoveItem(itemId: string) {
     startTransition(async () => {
-      const result = await removeOrVoidOrderItem({ orderItemId: itemId, reason: "Removed from waiter screen" });
+      const result = await removeOrVoidOrderItem({
+        orderItemId: itemId,
+        reason: l(locale, "Removed from waiter screen", "Eliminado desde pantalla de mesero")
+      });
       if (!result.success) toast.error(result.error);
       else {
-        toast.success("Item removed");
+        toast.success(l(locale, "Item removed", "Ítem eliminado"));
         router.refresh();
       }
     });
@@ -217,15 +235,21 @@ export function TableOrderWorkspace({
               <CardTitle className="text-xl">
                 {table.table_code} · {table.display_name}
               </CardTitle>
-              <p className="text-sm text-muted-foreground">Order status and live bill</p>
+              <p className="text-sm text-muted-foreground">
+                {l(locale, "Order status and live bill", "Estado del pedido y cuenta en vivo")}
+              </p>
             </div>
-            <StatusPill status={table.status as TableStatus} />
+            <LocalizedStatusPill status={table.status as TableStatus} locale={locale} />
           </div>
         </CardHeader>
         <CardContent className="space-y-3 luxury-scroll">
           {items.length === 0 ? (
             <div className="rounded-xl border border-dashed border-[#cfb487] bg-[#faf2e5] p-6 text-center text-sm text-muted-foreground">
-              No items yet. Tap a menu item on the right to start this table.
+              {l(
+                locale,
+                "No items yet. Tap a menu item on the right to start this table.",
+                "Aún no hay ítems. Toca un producto a la derecha para comenzar esta mesa."
+              )}
             </div>
           ) : (
             <div className="stagger-list space-y-2">
@@ -234,7 +258,7 @@ export function TableOrderWorkspace({
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="font-medium">
-                        {item.quantity}x {item.menu_items?.name ?? "Item"}
+                        {item.quantity}x {item.menu_items?.name ?? l(locale, "Item", "Ítem")}
                       </p>
                       {item.modifier_summary ? (
                         <p className="text-xs text-muted-foreground">{item.modifier_summary}</p>
@@ -243,7 +267,7 @@ export function TableOrderWorkspace({
                     </div>
                     <div className="text-right">
                       <p className="font-semibold">{formatMoney(Number(item.item_total))}</p>
-                      <StatusPill status={item.status as OrderItemStatus} />
+                      <LocalizedStatusPill status={item.status as OrderItemStatus} locale={locale} />
                     </div>
                   </div>
 
@@ -277,7 +301,7 @@ export function TableOrderWorkspace({
                     </div>
                   ) : (
                     <div className="mt-2 text-xs text-muted-foreground">
-                      Sent items can only be voided by role policy.
+                      {l(locale, "Sent items can only be voided by role policy.", "Los ítems enviados solo pueden anularse según políticas de rol.")}
                     </div>
                   )}
                 </div>
@@ -288,19 +312,19 @@ export function TableOrderWorkspace({
           <div className="rounded-xl border border-[#dbc9ad] bg-[#faf3e7] p-4">
             <div className="grid gap-1 text-sm">
               <div className="flex items-center justify-between">
-                <span>Subtotal</span>
+                <span>{l(locale, "Subtotal", "Subtotal")}</span>
                 <span>{formatMoney(Number(order?.subtotal ?? 0))}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span>Tax</span>
+                <span>{l(locale, "Tax", "Impuesto")}</span>
                 <span>{formatMoney(Number(order?.tax_total ?? 0))}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span>Service</span>
+                <span>{l(locale, "Service", "Servicio")}</span>
                 <span>{formatMoney(Number(order?.service_charge_total ?? 0))}</span>
               </div>
               <div className="flex items-center justify-between text-base font-semibold">
-                <span>Total</span>
+                <span>{l(locale, "Total", "Total")}</span>
                 <span>{formatMoney(Number(order?.total ?? 0))}</span>
               </div>
             </div>
@@ -310,7 +334,10 @@ export function TableOrderWorkspace({
             <div className="flex flex-wrap gap-2">
               <Button className="flex-1" onClick={onSendDraft} disabled={!order || draftItems.length === 0 || isPending}>
                 <Send className="h-4 w-4" />
-                Send {draftItems.length > 0 ? `${draftItems.length} draft` : "to kitchen"}
+                {l(locale, "Send", "Enviar")}{" "}
+                {draftItems.length > 0
+                  ? l(locale, `${draftItems.length} draft`, `${draftItems.length} borrador`)
+                  : l(locale, "to kitchen", "a cocina")}
               </Button>
               <Button
                 variant="secondary"
@@ -318,7 +345,7 @@ export function TableOrderWorkspace({
                 onClick={() => router.push(`/checkout?order=${order?.id ?? ""}`)}
                 disabled={!order}
               >
-                Go to checkout
+                {l(locale, "Go to checkout", "Ir a cobro")}
               </Button>
             </div>
           </div>
@@ -327,8 +354,10 @@ export function TableOrderWorkspace({
 
       <Card className="interactive-elevate overflow-hidden">
         <CardHeader className="pb-3">
-          <CardTitle className="text-xl">Add Items</CardTitle>
-          <p className="text-sm text-muted-foreground">Large touch targets for rapid ordering</p>
+          <CardTitle className="text-xl">{l(locale, "Add Items", "Agregar ítems")}</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            {l(locale, "Large touch targets for rapid ordering", "Botones grandes para pedir con rapidez")}
+          </p>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="luxury-scroll flex gap-2 overflow-x-auto pb-1">
@@ -352,7 +381,7 @@ export function TableOrderWorkspace({
               variant={selectedSubcategory === "all" ? "default" : "outline"}
               onClick={() => setSelectedSubcategory("all")}
             >
-              All
+              {l(locale, "All", "Todos")}
             </Button>
             {categorySubcategories.map((subcategory) => (
               <Button
@@ -375,7 +404,7 @@ export function TableOrderWorkspace({
               >
                 <p className="text-sm font-semibold">{item.name}</p>
                 <p className="line-clamp-2 min-h-[2.5rem] text-xs text-muted-foreground">
-                  {item.description ?? "No description"}
+                  {item.description ?? l(locale, "No description", "Sin descripción")}
                 </p>
                 <p className="mt-2 text-base font-semibold text-[#1f2d43]">{formatMoney(Number(item.price))}</p>
               </button>
@@ -389,13 +418,13 @@ export function TableOrderWorkspace({
         onOpenChange={(open) => {
           if (!open) closeDialog();
         }}
-        title={selectedItem ? `Add ${selectedItem.name}` : "Add item"}
+        title={selectedItem ? l(locale, `Add ${selectedItem.name}`, `Agregar ${selectedItem.name}`) : l(locale, "Add item", "Agregar ítem")}
       >
         {selectedItem ? (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label>Quantity</Label>
+                <Label>{l(locale, "Quantity", "Cantidad")}</Label>
                 <Input
                   type="number"
                   value={qty}
@@ -405,14 +434,16 @@ export function TableOrderWorkspace({
                 />
               </div>
               <div className="space-y-2">
-                <Label>Base price</Label>
+                <Label>{l(locale, "Base price", "Precio base")}</Label>
                 <Input value={formatMoney(Number(selectedItem.price))} readOnly />
               </div>
             </div>
 
             <div className="luxury-scroll max-h-52 space-y-3 overflow-y-auto rounded-xl border border-[#decfaf] bg-[#fdf9f2] p-3">
               {groups.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No modifiers for this item.</p>
+                <p className="text-sm text-muted-foreground">
+                  {l(locale, "No modifiers for this item.", "Este ítem no tiene modificadores.")}
+                </p>
               ) : (
                 groups.map((group) => (
                   <div key={group.id} className="space-y-2">
@@ -431,7 +462,9 @@ export function TableOrderWorkspace({
                             <span>{option.name}</span>
                             <span className="flex items-center gap-2">
                               <span className="text-xs text-muted-foreground">
-                                {option.price_delta ? `+${formatMoney(Number(option.price_delta))}` : "Included"}
+                                {option.price_delta
+                                  ? `+${formatMoney(Number(option.price_delta))}`
+                                  : l(locale, "Included", "Incluido")}
                               </span>
                               <input
                                 type="checkbox"
@@ -448,21 +481,25 @@ export function TableOrderWorkspace({
             </div>
 
             <div className="space-y-2">
-              <Label>Special instruction</Label>
+              <Label>{l(locale, "Special instruction", "Instrucción especial")}</Label>
               <Textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="No onion, extra cheese, sauce on side..."
+                placeholder={l(
+                  locale,
+                  "No onion, extra cheese, sauce on side...",
+                  "Sin cebolla, extra queso, salsa aparte..."
+                )}
               />
             </div>
 
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={closeDialog}>
-                Cancel
+                {l(locale, "Cancel", "Cancelar")}
               </Button>
               <Button onClick={onAddItem} disabled={isPending}>
                 <Plus className="h-4 w-4" />
-                Add to order
+                {l(locale, "Add to order", "Agregar al pedido")}
               </Button>
             </div>
           </div>

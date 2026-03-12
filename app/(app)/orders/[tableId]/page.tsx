@@ -6,6 +6,7 @@ import {
   type OrderWorkspaceProps
 } from "@/components/orders/table-order-workspace";
 import { getUserContextOrThrow, requireRoles } from "@/lib/auth";
+import { l } from "@/lib/i18n";
 import { getMenuData } from "@/lib/queries/menu";
 import { getTableOrderSnapshot } from "@/lib/queries/orders";
 import { createClient } from "@/lib/supabase/server";
@@ -117,11 +118,12 @@ export default async function TableOrderPage({ params }: { params: Promise<{ tab
   return (
     <AppShell
       context={context}
-      title={`Table ${snapshot.table.table_code}`}
-      subtitle="Build and manage this table order"
+      title={l(context.locale, `Table ${snapshot.table.table_code}`, `Mesa ${snapshot.table.table_code}`)}
+      subtitle={l(context.locale, "Build and manage this table order", "Construye y gestiona este pedido de mesa")}
     >
       <TableOrderWorkspace
         restaurantId={context.restaurantId}
+        locale={context.locale}
         tableId={tableId}
         table={table}
         order={order}

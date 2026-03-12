@@ -11,9 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { l, type Locale } from "@/lib/i18n";
 
 interface MenuItemFormProps {
   restaurantId: string;
+  locale: Locale;
   categories: Array<{ id: string; name: string }>;
   subcategories: Array<{ id: string; category_id: string; name: string }>;
   initial?: {
@@ -31,7 +33,7 @@ interface MenuItemFormProps {
   };
 }
 
-export function MenuItemForm({ restaurantId, categories, subcategories, initial }: MenuItemFormProps) {
+export function MenuItemForm({ restaurantId, locale, categories, subcategories, initial }: MenuItemFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -73,7 +75,7 @@ export function MenuItemForm({ restaurantId, categories, subcategories, initial 
         return;
       }
 
-      toast.success(initial?.id ? "Item updated" : "Item created");
+      toast.success(initial?.id ? l(locale, "Item updated", "Ítem actualizado") : l(locale, "Item created", "Ítem creado"));
       router.push("/menu");
       router.refresh();
     });
@@ -82,12 +84,12 @@ export function MenuItemForm({ restaurantId, categories, subcategories, initial 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{initial?.id ? "Edit menu item" : "New menu item"}</CardTitle>
+        <CardTitle>{initial?.id ? l(locale, "Edit menu item", "Editar ítem del menú") : l(locale, "New menu item", "Nuevo ítem del menú")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label>Category</Label>
+            <Label>{l(locale, "Category", "Categoría")}</Label>
             <Select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -97,9 +99,9 @@ export function MenuItemForm({ restaurantId, categories, subcategories, initial 
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Subcategory</Label>
+            <Label>{l(locale, "Subcategory", "Subcategoría")}</Label>
             <Select value={subcategoryId} onChange={(e) => setSubcategoryId(e.target.value)}>
-              <option value="">None</option>
+              <option value="">{l(locale, "None", "Ninguna")}</option>
               {scopedSubcategories.map((subcategory) => (
                 <option key={subcategory.id} value={subcategory.id}>
                   {subcategory.name}
@@ -110,52 +112,56 @@ export function MenuItemForm({ restaurantId, categories, subcategories, initial 
         </div>
 
         <div className="space-y-2">
-          <Label>Name</Label>
+          <Label>{l(locale, "Name", "Nombre")}</Label>
           <Input value={name} onChange={(e) => setName(e.target.value)} />
         </div>
 
         <div className="space-y-2">
-          <Label>Description</Label>
+          <Label>{l(locale, "Description", "Descripción")}</Label>
           <Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
-            <Label>Price</Label>
+            <Label>{l(locale, "Price", "Precio")}</Label>
             <Input type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label>Tax %</Label>
+            <Label>{l(locale, "Tax %", "Impuesto %")}</Label>
             <Input type="number" step="0.1" min="0" value={taxRate} onChange={(e) => setTaxRate(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label>Sort order</Label>
+            <Label>{l(locale, "Sort order", "Orden")}</Label>
             <Input type="number" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} />
           </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label>Prep station</Label>
-            <Input value={prepStation} onChange={(e) => setPrepStation(e.target.value)} placeholder="grill, bar, fry" />
+            <Label>{l(locale, "Prep station", "Estación de preparación")}</Label>
+            <Input
+              value={prepStation}
+              onChange={(e) => setPrepStation(e.target.value)}
+              placeholder={l(locale, "grill, bar, fry", "parrilla, bar, freidora")}
+            />
           </div>
           <div className="space-y-2">
-            <Label>Image URL</Label>
+            <Label>{l(locale, "Image URL", "URL de imagen")}</Label>
             <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
           </div>
         </div>
 
         <label className="flex items-center gap-2 text-sm font-medium">
           <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
-          Active item
+          {l(locale, "Active item", "Ítem activo")}
         </label>
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => router.back()}>
-            Cancel
+            {l(locale, "Cancel", "Cancelar")}
           </Button>
           <Button onClick={submit} disabled={isPending}>
-            {isPending ? "Saving..." : "Save item"}
+            {isPending ? l(locale, "Saving...", "Guardando...") : l(locale, "Save item", "Guardar ítem")}
           </Button>
         </div>
       </CardContent>

@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/badge";
+import { roleLabel } from "@/lib/i18n";
 import type { UserContext } from "@/lib/types";
 
 export function AppHeader({ context, title, subtitle }: { context: UserContext; title: string; subtitle: string }) {
   const now = new Date();
-  const nowLabel = now.toLocaleString("en-US", {
+  const nowLabel = now.toLocaleString(context.locale === "es" ? "es-HN" : "en-US", {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -21,7 +22,7 @@ export function AppHeader({ context, title, subtitle }: { context: UserContext; 
         <div className="flex items-center gap-2">
           <Badge variant="outline">{nowLabel}</Badge>
           {context.restaurantName ? <Badge variant="secondary">{context.restaurantName}</Badge> : null}
-          <Badge className="capitalize">{context.role.replace("_", " ")}</Badge>
+          <Badge>{roleLabel(context.locale, context.role)}</Badge>
           <Badge variant="outline">{context.fullName}</Badge>
         </div>
       </div>

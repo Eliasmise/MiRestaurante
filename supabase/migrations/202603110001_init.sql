@@ -46,6 +46,7 @@ create table public.restaurant_settings (
   id uuid primary key default gen_random_uuid(),
   restaurant_id uuid not null unique references public.restaurants(id) on delete cascade,
   currency_code text not null default 'USD',
+  language text not null default 'en' check (language in ('en', 'es')),
   tax_percent numeric(6,2) not null default 15,
   service_charge_percent numeric(6,2) not null default 10,
   allow_waiter_close_table boolean not null default true,

@@ -9,7 +9,7 @@ import { restaurantSettingsSchema, staffRoleSchema } from "@/lib/validators/sett
 export async function updateRestaurantSettings(input: unknown) {
   const parsed = restaurantSettingsSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid settings payload" };
+    return { success: false as const, error: "Invalid settings payload / Payload de configuración inválido" };
   }
 
   const context = await getUserContextOrThrow();
@@ -33,6 +33,7 @@ export async function updateRestaurantSettings(input: unknown) {
       tax_percent: parsed.data.taxPercent,
       service_charge_percent: parsed.data.serviceChargePercent,
       allow_waiter_close_table: parsed.data.allowWaiterCloseTable,
+      language: parsed.data.language,
       updated_by: context.userId
     },
     { onConflict: "restaurant_id" }
@@ -51,7 +52,7 @@ export async function updateRestaurantSettings(input: unknown) {
 export async function updateStaffRole(input: unknown) {
   const parsed = staffRoleSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid staff payload" };
+    return { success: false as const, error: "Invalid staff payload / Payload de personal inválido" };
   }
 
   const context = await getUserContextOrThrow();

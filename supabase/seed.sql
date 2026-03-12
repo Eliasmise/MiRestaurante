@@ -116,6 +116,7 @@ on conflict (id) do nothing;
 insert into public.restaurant_settings (
   restaurant_id,
   currency_code,
+  language,
   tax_percent,
   service_charge_percent,
   allow_waiter_close_table,
@@ -125,6 +126,7 @@ insert into public.restaurant_settings (
 values (
   '11111111-1111-1111-1111-111111111111',
   'USD',
+  'en',
   15,
   10,
   true,
@@ -134,6 +136,7 @@ values (
 on conflict (restaurant_id) do update
 set
   currency_code = excluded.currency_code,
+  language = excluded.language,
   tax_percent = excluded.tax_percent,
   service_charge_percent = excluded.service_charge_percent,
   allow_waiter_close_table = excluded.allow_waiter_close_table,

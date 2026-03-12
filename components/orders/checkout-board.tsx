@@ -12,6 +12,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { l, tableStatusLabel, type Locale } from "@/lib/i18n";
 import { formatMoney } from "@/lib/utils";
 
 export interface OpenOrder {
@@ -26,10 +27,12 @@ export interface OpenOrder {
 
 export function CheckoutBoard({
   orders,
-  preselectedOrderId
+  preselectedOrderId,
+  locale
 }: {
   orders: OpenOrder[];
   preselectedOrderId?: string;
+  locale: Locale;
 }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -85,7 +88,7 @@ export function CheckoutBoard({
         return;
       }
 
-      toast.success("Order closed and table released");
+      toast.success(l(locale, "Order closed and table released", "Pedido cerrado y mesa liberada"));
       closeDialog();
       router.refresh();
     });
@@ -95,11 +98,11 @@ export function CheckoutBoard({
     <div className="space-y-4">
       <Card className="interactive-elevate">
         <CardHeader className="pb-3">
-          <CardTitle>Open Checks</CardTitle>
+          <CardTitle>{l(locale, "Open Checks", "Cuentas abiertas")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Input
-            placeholder="Search by table, waiter or order number"
+            placeholder={l(locale, "Search by table, waiter or order number", "Buscar por mesa, mesero o número de pedido")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -113,13 +116,15 @@ export function CheckoutBoard({
                 <div className="flex items-center justify-between gap-2">
                   <p className="font-semibold">#{order.order_number}</p>
                   <span className="rounded-full bg-[#f8efe0] px-2 py-0.5 text-xs capitalize text-[#7b613a]">
-                    {order.status.replaceAll("_", " ")}
+                    {tableStatusLabel(locale, order.status)}
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Table {order.floor_table?.table_code} · {order.floor_table?.display_name}
+                  {l(locale, "Table", "Mesa")} {order.floor_table?.table_code} · {order.floor_table?.display_name}
                 </p>
-                <p className="text-sm text-muted-foreground">Waiter: {order.waiter?.full_name ?? "-"}</p>
+                <p className="text-sm text-muted-foreground">
+                  {l(locale, "Waiter", "Mesero")}: {order.waiter?.full_name ?? "-"}
+                </p>
                 <p className="mt-3 text-lg font-semibold text-[#1f2d43]">{formatMoney(Number(order.total))}</p>
               </button>
             ))}
@@ -132,32 +137,36 @@ export function CheckoutBoard({
         onOpenChange={(open) => {
           if (!open) closeDialog();
         }}
-        title={selectedOrder ? `Close Order #${selectedOrder.order_number}` : "Close order"}
+        title={
+          selectedOrder
+            ? l(locale, `Close Order #${selectedOrder.order_number}`, `Cerrar pedido #${selectedOrder.order_number}`)
+            : l(locale, "Close order", "Cerrar pedido")
+        }
       >
         {selectedOrder ? (
           <div className="space-y-4">
             <div className="rounded-xl border border-[#dbc9ad] bg-[#faf3e7] p-3">
-              <p className="text-sm text-muted-foreground">Table</p>
+              <p className="text-sm text-muted-foreground">{l(locale, "Table", "Mesa")}</p>
               <p className="font-medium">
                 {selectedOrder.floor_table?.table_code} · {selectedOrder.floor_table?.display_name}
               </p>
               <p className="mt-2 text-xl font-semibold text-primary">
-                Total: {formatMoney(Number(selectedOrder.total))}
+                {l(locale, "Total", "Total")}: {formatMoney(Number(selectedOrder.total))}
               </p>
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
               <div className="space-y-2">
-                <Label>Payment Method</Label>
+                <Label>{l(locale, "Payment Method", "Método de pago")}</Label>
                 <Select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
-                  <option value="cash">Cash</option>
-                  <option value="card">Card</option>
-                  <option value="transfer">Transfer</option>
-                  <option value="other">Other</option>
+                  <option value="cash">{l(locale, "Cash", "Efectivo")}</option>
+                  <option value="card">{l(locale, "Card", "Tarjeta")}</option>
+                  <option value="transfer">{l(locale, "Transfer", "Transferencia")}</option>
+                  <option value="other">{l(locale, "Other", "Otro")}</option>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Amount Paid</Label>
+                <Label>{l(locale, "Amount Paid", "Monto pagado")}</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -166,7 +175,7 @@ export function CheckoutBoard({
                 />
               </div>
               <div className="space-y-2">
-                <Label>Tip Amount</Label>
+                <Label>{l(locale, "Tip Amount", "Propina")}</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -175,18 +184,18 @@ export function CheckoutBoard({
                 />
               </div>
               <div className="space-y-2">
-                <Label>Note</Label>
+                <Label>{l(locale, "Note", "Nota")}</Label>
                 <Input value={note} onChange={(e) => setNote(e.target.value)} />
               </div>
             </div>
 
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={closeDialog}>
-                Cancel
+                {l(locale, "Cancel", "Cancelar")}
               </Button>
               <Button onClick={onConfirmPayment} disabled={isPending}>
                 <CheckCircle2 className="h-4 w-4" />
-                Confirm Payment
+                {l(locale, "Confirm Payment", "Confirmar pago")}
               </Button>
             </div>
           </div>

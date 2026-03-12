@@ -4,11 +4,12 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Focus, Layers } from "lucide-react";
 
-import { StatusPill } from "@/components/shared/status-pill";
+import { LocalizedStatusPill } from "@/components/shared/status-pill";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
 import { useRealtimeRefresh } from "@/hooks/use-realtime-refresh";
+import { l, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import type { FloorTable, TableStatus, UserRole } from "@/lib/types";
 
@@ -27,6 +28,7 @@ interface FloorOperationalViewProps {
   restaurantId: string;
   userId: string;
   role: UserRole;
+  locale: Locale;
   floors: Array<{ id: string; name: string; width: number; height: number }>;
   tables: FloorTable[];
 }
@@ -35,6 +37,7 @@ export function FloorOperationalView({
   restaurantId,
   userId,
   role,
+  locale,
   floors,
   tables
 }: FloorOperationalViewProps) {
@@ -69,7 +72,7 @@ export function FloorOperationalView({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <CardTitle className="flex items-center gap-2">
               <Layers className="h-5 w-5 text-primary" />
-              Live Floor Map
+              {l(locale, "Live Floor Map", "Mapa de salón en vivo")}
             </CardTitle>
             <div className="flex flex-wrap items-center gap-2">
               <Select
@@ -89,7 +92,9 @@ export function FloorOperationalView({
                   onClick={() => setShowMineOnly((current) => !current)}
                 >
                   <Focus className="h-4 w-4" />
-                  {showMineOnly ? "Showing My Tables" : "Show My Tables"}
+                  {showMineOnly
+                    ? l(locale, "Showing My Tables", "Mostrando mis mesas")
+                    : l(locale, "Show My Tables", "Mostrar mis mesas")}
                 </Button>
               )}
             </div>
@@ -106,32 +111,40 @@ export function FloorOperationalView({
               "ready",
               "needs_payment"
             ].map((status) => (
-              <StatusPill key={status} status={status as TableStatus} />
+              <LocalizedStatusPill key={status} status={status as TableStatus} locale={locale} />
             ))}
             <span className="ml-auto rounded-full bg-[#f8efe0] px-3 py-1 text-xs font-semibold text-[#7b613a]">
-              {visibleTables.length} visible tables
+              {visibleTables.length} {l(locale, "visible tables", "mesas visibles")}
             </span>
           </div>
 
           <div className="stagger-list mb-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
             <div className="interactive-elevate rounded-xl border border-white/80 bg-white/70 p-3">
-              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Available</p>
+              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                {l(locale, "Available", "Disponibles")}
+              </p>
               <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">{byStatus.available ?? 0}</p>
             </div>
             <div className="interactive-elevate rounded-xl border border-white/80 bg-white/70 p-3">
-              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">In Service</p>
+              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                {l(locale, "In Service", "En servicio")}
+              </p>
               <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">
                 {(byStatus.occupied ?? 0) + (byStatus.ordering ?? 0) + (byStatus.sent_to_kitchen ?? 0)}
               </p>
             </div>
             <div className="interactive-elevate rounded-xl border border-white/80 bg-white/70 p-3">
-              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Kitchen Active</p>
+              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                {l(locale, "Kitchen Active", "Cocina activa")}
+              </p>
               <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">
                 {(byStatus.in_preparation ?? 0) + (byStatus.ready ?? 0)}
               </p>
             </div>
             <div className="interactive-elevate rounded-xl border border-white/80 bg-white/70 p-3">
-              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Needs Payment</p>
+              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                {l(locale, "Needs Payment", "Pendientes de cobro")}
+              </p>
               <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">{byStatus.needs_payment ?? 0}</p>
             </div>
           </div>
@@ -170,7 +183,9 @@ export function FloorOperationalView({
                 >
                   <span className="text-base font-semibold text-[#1f2d43]">{table.table_code}</span>
                   <span className="line-clamp-1 text-xs text-slate-700">{table.display_name}</span>
-                  <span className="text-[11px] text-slate-600">{table.assigned_waiter_name ?? "Unassigned"}</span>
+                  <span className="text-[11px] text-slate-600">
+                    {table.assigned_waiter_name ?? l(locale, "Unassigned", "Sin asignar")}
+                  </span>
                 </button>
               ))}
             </div>

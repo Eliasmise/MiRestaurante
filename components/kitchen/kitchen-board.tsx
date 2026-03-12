@@ -4,9 +4,10 @@ import { useMemo, useTransition } from "react";
 import { toast } from "sonner";
 
 import { updateKitchenItemStatus } from "@/lib/actions/order";
-import { StatusPill } from "@/components/shared/status-pill";
+import { LocalizedStatusPill } from "@/components/shared/status-pill";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { l, tableStatusLabel, type Locale } from "@/lib/i18n";
 import { minutesAgo } from "@/lib/utils";
 import { useRealtimeRefresh } from "@/hooks/use-realtime-refresh";
 
@@ -33,7 +34,7 @@ export interface KitchenItem {
     | null;
 }
 
-export function KitchenBoard({ restaurantId, items }: { restaurantId: string; items: KitchenItem[] }) {
+export function KitchenBoard({ restaurantId, items, locale }: { restaurantId: string; items: KitchenItem[]; locale: Locale }) {
   const [isPending, startTransition] = useTransition();
 
   useRealtimeRefresh({
@@ -76,7 +77,13 @@ export function KitchenBoard({ restaurantId, items }: { restaurantId: string; it
         toast.error(result.error);
         return;
       }
-      toast.success(`Updated to ${status}`);
+      toast.success(
+        l(
+          locale,
+          `Updated to ${tableStatusLabel(locale, status)}`,
+          `Actualizado a ${tableStatusLabel(locale, status)}`
+        )
+      );
     });
   }
 
@@ -95,14 +102,16 @@ export function KitchenBoard({ restaurantId, items }: { restaurantId: string; it
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <CardTitle className="text-[#1f2d43]">Order #{ticket.orderNumber}</CardTitle>
+                  <CardTitle className="text-[#1f2d43]">
+                    {l(locale, "Order", "Pedido")} #{ticket.orderNumber}
+                  </CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    Table {ticket.tableCode} · Waiter {ticket.waiterName}
+                    {l(locale, "Table", "Mesa")} {ticket.tableCode} · {l(locale, "Waiter", "Mesero")} {ticket.waiterName}
                   </p>
                 </div>
                 <div className="text-right text-xs text-muted-foreground">
                   <p>{minutesAgo(ticket.oldest ?? null)}</p>
-                  {overdue ? <p className="font-semibold text-rose-600">Overdue</p> : null}
+                  {overdue ? <p className="font-semibold text-rose-600">{l(locale, "Overdue", "Atrasado")}</p> : null}
                 </div>
               </div>
             </CardHeader>
@@ -113,14 +122,14 @@ export function KitchenBoard({ restaurantId, items }: { restaurantId: string; it
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="font-medium">
-                        {item.quantity}x {item.menu_items?.name ?? "Item"}
+                        {item.quantity}x {item.menu_items?.name ?? l(locale, "Item", "Ítem")}
                       </p>
                       {item.modifier_summary ? (
                         <p className="text-xs text-muted-foreground">{item.modifier_summary}</p>
                       ) : null}
                       {item.note ? <p className="text-xs italic text-muted-foreground">{item.note}</p> : null}
                     </div>
-                    <StatusPill status={item.status} />
+                    <LocalizedStatusPill status={item.status} locale={locale} />
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {item.status === "submitted" ? (
@@ -129,7 +138,7 @@ export function KitchenBoard({ restaurantId, items }: { restaurantId: string; it
                         onClick={() => moveTo(item.id, "preparing")}
                         disabled={isPending}
                       >
-                        Start Prep
+                        {l(locale, "Start Prep", "Iniciar preparación")}
                       </Button>
                     ) : null}
                     {item.status === "preparing" ? (
@@ -138,7 +147,7 @@ export function KitchenBoard({ restaurantId, items }: { restaurantId: string; it
                         onClick={() => moveTo(item.id, "ready")}
                         disabled={isPending}
                       >
-                        Mark Ready
+                        {l(locale, "Mark Ready", "Marcar listo")}
                       </Button>
                     ) : null}
                     {item.status === "ready" ? (
@@ -148,7 +157,7 @@ export function KitchenBoard({ restaurantId, items }: { restaurantId: string; it
                         onClick={() => moveTo(item.id, "served")}
                         disabled={isPending}
                       >
-                        Complete
+                        {l(locale, "Complete", "Completar")}
                       </Button>
                     ) : null}
                   </div>

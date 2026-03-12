@@ -1,6 +1,7 @@
 import { AppShell } from "@/components/layout/app-shell";
 import { StaffManagementTable } from "@/components/shared/settings-form";
 import { getUserContextOrThrow, requireRoles } from "@/lib/auth";
+import { l } from "@/lib/i18n";
 import { getRestaurantSettings } from "@/lib/queries/settings";
 
 export default async function StaffPage() {
@@ -18,12 +19,13 @@ export default async function StaffPage() {
   return (
     <AppShell
       context={context}
-      title="Staff Management"
-      subtitle="Role permissions and active access control"
+      title={l(context.locale, "Staff Management", "Gestión de personal")}
+      subtitle={l(context.locale, "Role permissions and active access control", "Roles, permisos y control de acceso")}
     >
       <StaffManagementTable
         restaurantId={context.restaurantId!}
         staff={staff}
+        locale={context.locale}
       />
     </AppShell>
   );

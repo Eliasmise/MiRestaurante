@@ -2,6 +2,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { CheckoutBoard, type OpenOrder } from "@/components/orders/checkout-board";
 import { EmptyState } from "@/components/shared/empty-state";
 import { getUserContextOrThrow, requireRoles } from "@/lib/auth";
+import { l } from "@/lib/i18n";
 import { getOpenOrdersForCheckout } from "@/lib/queries/orders";
 
 export default async function CheckoutPage({
@@ -39,16 +40,16 @@ export default async function CheckoutPage({
   return (
     <AppShell
       context={context}
-      title="Checkout"
-      subtitle="Close bills and free tables quickly"
+      title={l(context.locale, "Checkout", "Cobro")}
+      subtitle={l(context.locale, "Close bills and free tables quickly", "Cierra cuentas y libera mesas rápidamente")}
     >
       {orders.length === 0 ? (
         <EmptyState
-          title="No open checks"
-          description="Closed orders will immediately appear in reports."
+          title={l(context.locale, "No open checks", "No hay cuentas abiertas")}
+          description={l(context.locale, "Closed orders will immediately appear in reports.", "Los pedidos cerrados aparecerán de inmediato en reportes.")}
         />
       ) : (
-        <CheckoutBoard orders={typedOrders} preselectedOrderId={params.order} />
+        <CheckoutBoard orders={typedOrders} preselectedOrderId={params.order} locale={context.locale} />
       )}
     </AppShell>
   );

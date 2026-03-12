@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { localeOrDefault } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import type { UserContext, UserRole } from "@/lib/types";
 
@@ -32,7 +33,7 @@ export async function getUserContextOrThrow(): Promise<UserContext> {
     .eq("active", true);
 
   if (error || !memberships || memberships.length === 0) {
-    throw new Error("No active restaurant membership found for user.");
+    throw new Error("No active restaurant membership found for user / No se encontró membresía activa para este usuario.");
   }
 
   const role = pickHighestRole(memberships.map((m) => m.role as UserRole));
@@ -46,6 +47,7 @@ export async function getUserContextOrThrow(): Promise<UserContext> {
   let fallbackRestaurantId = scopedMembership.restaurant_id;
   let fallbackRestaurantName =
     Array.isArray(restaurantRelation) ? restaurantRelation[0]?.name ?? null : restaurantRelation?.name ?? null;
+  let locale: UserContext["locale"] = "en";
 
   if (role === "super_admin" && !fallbackRestaurantId) {
     const { data: firstRestaurant } = await supabase
@@ -60,12 +62,22 @@ export async function getUserContextOrThrow(): Promise<UserContext> {
     }
   }
 
+  if (fallbackRestaurantId) {
+    const { data: settings } = await supabase
+      .from("restaurant_settings")
+      .select("language")
+      .eq("restaurant_id", fallbackRestaurantId)
+      .maybeSingle();
+    locale = localeOrDefault(settings?.language);
+  }
+
   return {
     userId: user.id,
     role,
     restaurantId: fallbackRestaurantId,
-    fullName: scopedMembership.full_name ?? user.email ?? "Staff",
-    restaurantName: fallbackRestaurantName
+    fullName: scopedMembership.full_name ?? user.email ?? "Personal",
+    restaurantName: fallbackRestaurantName,
+    locale
   };
 }
 

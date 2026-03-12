@@ -7,7 +7,7 @@ export async function getRestaurantSettings(restaurantId: string) {
     supabase.from("restaurants").select("id, name").eq("id", restaurantId).single(),
     supabase
       .from("restaurant_settings")
-      .select("currency_code, tax_percent, service_charge_percent, allow_waiter_close_table")
+      .select("currency_code, tax_percent, service_charge_percent, allow_waiter_close_table, language")
       .eq("restaurant_id", restaurantId)
       .maybeSingle(),
     supabase

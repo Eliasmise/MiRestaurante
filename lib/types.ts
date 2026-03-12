@@ -37,6 +37,7 @@ export interface UserContext {
   role: UserRole;
   fullName: string;
   restaurantName: string | null;
+  locale: "en" | "es";
 }
 
 export interface FloorTable {

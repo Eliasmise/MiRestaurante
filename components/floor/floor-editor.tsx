@@ -10,16 +10,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { l, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import type { FloorTable } from "@/lib/types";
 
 interface FloorEditorProps {
   restaurantId: string;
+  locale: Locale;
   floor: { id: string; name: string; width: number; height: number };
   initialTables: FloorTable[];
 }
 
-export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorProps) {
+export function FloorEditor({ restaurantId, floor, initialTables, locale }: FloorEditorProps) {
   const [tables, setTables] = useState(initialTables);
   const [selectedId, setSelectedId] = useState<string | null>(initialTables[0]?.id ?? null);
   const [saving, setSaving] = useState(false);
@@ -44,7 +46,7 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
       floor_id: floor.id,
       section_id: null,
       table_code: `T${tableNumber}`,
-      display_name: `Table ${tableNumber}`,
+      display_name: l(locale, `Table ${tableNumber}`, `Mesa ${tableNumber}`),
       shape: tableNumber % 3 === 0 ? "rectangle" : tableNumber % 2 === 0 ? "square" : "circle",
       pos_x: 60 + tableNumber * 16,
       pos_y: 60 + tableNumber * 12,
@@ -107,7 +109,7 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
       return;
     }
 
-    toast.success("Floor layout saved");
+    toast.success(l(locale, "Floor layout saved", "Plano guardado"));
   }
 
   function onPointerDown(event: React.PointerEvent<HTMLButtonElement>, tableId: string) {
@@ -154,15 +156,17 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
       <Card className="interactive-elevate overflow-hidden">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between gap-2">
-            <CardTitle>{floor.name} Layout Studio</CardTitle>
+            <CardTitle>
+              {floor.name} {l(locale, "Layout Studio", "Estudio de plano")}
+            </CardTitle>
             <div className="flex gap-2">
               <Button variant="outline" onClick={addTable}>
                 <Plus className="h-4 w-4" />
-                Add Table
+                {l(locale, "Add Table", "Agregar mesa")}
               </Button>
               <Button onClick={onSave} disabled={saving}>
                 <Save className="h-4 w-4" />
-                {saving ? "Saving..." : "Save Layout"}
+                {saving ? l(locale, "Saving...", "Guardando...") : l(locale, "Save Layout", "Guardar plano")}
               </Button>
             </div>
           </div>
@@ -207,22 +211,24 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
 
       <Card className="interactive-elevate">
         <CardHeader>
-          <CardTitle>Table Properties</CardTitle>
+          <CardTitle>{l(locale, "Table Properties", "Propiedades de la mesa")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {!selected ? (
-            <p className="text-sm text-muted-foreground">Select a table to edit.</p>
+            <p className="text-sm text-muted-foreground">
+              {l(locale, "Select a table to edit.", "Selecciona una mesa para editar.")}
+            </p>
           ) : (
             <>
               <div className="space-y-2">
-                <Label>Table Code</Label>
+                <Label>{l(locale, "Table Code", "Código de mesa")}</Label>
                 <Input
                   value={selected.table_code}
                   onChange={(e) => patchSelected({ table_code: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Display Name</Label>
+                <Label>{l(locale, "Display Name", "Nombre visible")}</Label>
                 <Input
                   value={selected.display_name}
                   onChange={(e) => patchSelected({ display_name: e.target.value })}
@@ -230,7 +236,7 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label>Shape</Label>
+                  <Label>{l(locale, "Shape", "Forma")}</Label>
                   <Select
                     value={selected.shape}
                     onChange={(e) =>
@@ -239,13 +245,13 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
                       })
                     }
                   >
-                    <option value="circle">Circle</option>
-                    <option value="square">Square</option>
-                    <option value="rectangle">Rectangle</option>
+                    <option value="circle">{l(locale, "Circle", "Círculo")}</option>
+                    <option value="square">{l(locale, "Square", "Cuadrada")}</option>
+                    <option value="rectangle">{l(locale, "Rectangle", "Rectangular")}</option>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>Seats</Label>
+                  <Label>{l(locale, "Seats", "Asientos")}</Label>
                   <Input
                     type="number"
                     min={1}
@@ -258,7 +264,7 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label>Width</Label>
+                  <Label>{l(locale, "Width", "Ancho")}</Label>
                   <Input
                     type="number"
                     min={60}
@@ -268,7 +274,7 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Height</Label>
+                  <Label>{l(locale, "Height", "Alto")}</Label>
                   <Input
                     type="number"
                     min={60}
@@ -300,7 +306,7 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
 
               <Button variant="destructive" className="w-full" onClick={removeSelected}>
                 <Trash2 className="h-4 w-4" />
-                Remove Table
+                {l(locale, "Remove Table", "Eliminar mesa")}
               </Button>
             </>
           )}

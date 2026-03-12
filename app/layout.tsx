@@ -5,7 +5,7 @@ import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Mi Restaurante OS",
-  description: "Multi-tenant restaurant operations platform"
+  description: "Plataforma multi-tenant de operaciones para restaurantes"
 };
 
 export default function RootLayout({

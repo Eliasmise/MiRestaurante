@@ -11,10 +11,12 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { l, type Locale } from "@/lib/i18n";
 import { formatMoney } from "@/lib/utils";
 
 interface MenuManagementProps {
   restaurantId: string;
+  locale: Locale;
   categories: Array<{ id: string; name: string; slug: string; sort_order: number }>;
   subcategories: Array<{ id: string; category_id: string; name: string; sort_order: number }>;
   items: Array<{
@@ -39,6 +41,7 @@ function slugify(value: string) {
 
 export function MenuManagement({
   restaurantId,
+  locale,
   categories,
   subcategories,
   items
@@ -66,7 +69,7 @@ export function MenuManagement({
         return;
       }
 
-      toast.success("Category created");
+      toast.success(l(locale, "Category created", "Categoría creada"));
       setCategoryName("");
       router.refresh();
     });
@@ -91,7 +94,7 @@ export function MenuManagement({
         return;
       }
 
-      toast.success("Subcategory created");
+      toast.success(l(locale, "Subcategory created", "Subcategoría creada"));
       setSubcategoryName("");
       router.refresh();
     });
@@ -102,27 +105,27 @@ export function MenuManagement({
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>New Category</CardTitle>
+            <CardTitle>{l(locale, "New Category", "Nueva categoría")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-2">
-              <Label>Name</Label>
+              <Label>{l(locale, "Name", "Nombre")}</Label>
               <Input value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
             </div>
             <Button onClick={createCategory} disabled={isPending}>
               <Plus className="h-4 w-4" />
-              Add category
+              {l(locale, "Add category", "Agregar categoría")}
             </Button>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>New Subcategory</CardTitle>
+            <CardTitle>{l(locale, "New Subcategory", "Nueva subcategoría")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-2">
-              <Label>Category</Label>
+              <Label>{l(locale, "Category", "Categoría")}</Label>
               <select
                 value={subcategoryCategoryId}
                 onChange={(e) => setSubcategoryCategoryId(e.target.value)}
@@ -136,12 +139,12 @@ export function MenuManagement({
               </select>
             </div>
             <div className="space-y-2">
-              <Label>Name</Label>
+              <Label>{l(locale, "Name", "Nombre")}</Label>
               <Input value={subcategoryName} onChange={(e) => setSubcategoryName(e.target.value)} />
             </div>
             <Button onClick={createSubcategory} disabled={isPending}>
               <Plus className="h-4 w-4" />
-              Add subcategory
+              {l(locale, "Add subcategory", "Agregar subcategoría")}
             </Button>
           </CardContent>
         </Card>
@@ -150,9 +153,9 @@ export function MenuManagement({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <CardTitle>Menu Items</CardTitle>
+            <CardTitle>{l(locale, "Menu Items", "Ítems del menú")}</CardTitle>
             <Link href="/menu/new" className={buttonVariants({ variant: "default" })}>
-              Create item
+              {l(locale, "Create item", "Crear ítem")}
             </Link>
           </div>
         </CardHeader>
@@ -161,12 +164,12 @@ export function MenuManagement({
             <table className="w-full min-w-[760px] text-sm">
               <thead className="bg-muted/50 text-left">
                 <tr>
-                  <th className="px-3 py-2">Item</th>
-                  <th className="px-3 py-2">Category</th>
-                  <th className="px-3 py-2">Subcategory</th>
-                  <th className="px-3 py-2">Station</th>
-                  <th className="px-3 py-2">Price</th>
-                  <th className="px-3 py-2">Status</th>
+                  <th className="px-3 py-2">{l(locale, "Item", "Ítem")}</th>
+                  <th className="px-3 py-2">{l(locale, "Category", "Categoría")}</th>
+                  <th className="px-3 py-2">{l(locale, "Subcategory", "Subcategoría")}</th>
+                  <th className="px-3 py-2">{l(locale, "Station", "Estación")}</th>
+                  <th className="px-3 py-2">{l(locale, "Price", "Precio")}</th>
+                  <th className="px-3 py-2">{l(locale, "Status", "Estado")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -181,7 +184,9 @@ export function MenuManagement({
                       <td className="px-3 py-2">{subcategory?.name ?? "-"}</td>
                       <td className="px-3 py-2">{item.prep_station ?? "-"}</td>
                       <td className="px-3 py-2">{formatMoney(Number(item.price))}</td>
-                      <td className="px-3 py-2">{item.is_active ? "Active" : "Inactive"}</td>
+                      <td className="px-3 py-2">
+                        {item.is_active ? l(locale, "Active", "Activo") : l(locale, "Inactive", "Inactivo")}
+                      </td>
                     </tr>
                   );
                 })}

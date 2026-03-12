@@ -1,6 +1,7 @@
 import { AppShell } from "@/components/layout/app-shell";
 import { MenuManagement } from "@/components/menu/menu-management";
 import { getUserContextOrThrow, requireRoles } from "@/lib/auth";
+import { l } from "@/lib/i18n";
 import { getMenuData } from "@/lib/queries/menu";
 
 export default async function MenuPage() {
@@ -33,14 +34,15 @@ export default async function MenuPage() {
   return (
     <AppShell
       context={context}
-      title="Menu Management"
-      subtitle="Categories, items, and pricing"
+      title={l(context.locale, "Menu Management", "Gestión de menú")}
+      subtitle={l(context.locale, "Categories, items, and pricing", "Categorías, ítems y precios")}
     >
       <MenuManagement
         restaurantId={context.restaurantId!}
         categories={categories}
         subcategories={subcategories}
         items={items}
+        locale={context.locale}
       />
     </AppShell>
   );

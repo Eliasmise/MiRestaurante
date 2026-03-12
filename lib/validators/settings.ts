@@ -6,7 +6,8 @@ export const restaurantSettingsSchema = z.object({
   currencyCode: z.string().length(3),
   taxPercent: z.number().min(0).max(50),
   serviceChargePercent: z.number().min(0).max(40),
-  allowWaiterCloseTable: z.boolean().default(false)
+  allowWaiterCloseTable: z.boolean().default(false),
+  language: z.enum(["en", "es"]).default("en")
 });
 
 export const staffRoleSchema = z.object({

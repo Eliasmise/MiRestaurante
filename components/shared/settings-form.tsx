@@ -9,10 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { l, roleLabel, type Locale } from "@/lib/i18n";
+import type { UserRole } from "@/lib/types";
 
 export function RestaurantSettingsForm({
   restaurant,
-  settings
+  settings,
+  locale
 }: {
   restaurant: { id: string; name: string };
   settings: {
@@ -20,7 +24,9 @@ export function RestaurantSettingsForm({
     tax_percent: number;
     service_charge_percent: number;
     allow_waiter_close_table: boolean;
+    language: Locale;
   } | null;
+  locale: Locale;
 }) {
   const router = useRouter();
   const [name, setName] = useState(restaurant.name);
@@ -28,6 +34,7 @@ export function RestaurantSettingsForm({
   const [taxPercent, setTaxPercent] = useState(String(settings?.tax_percent ?? 15));
   const [servicePercent, setServicePercent] = useState(String(settings?.service_charge_percent ?? 10));
   const [allowWaiterClose, setAllowWaiterClose] = useState(settings?.allow_waiter_close_table ?? true);
+  const [language, setLanguage] = useState<Locale>(settings?.language ?? locale);
   const [isPending, startTransition] = useTransition();
 
   function submit() {
@@ -38,7 +45,8 @@ export function RestaurantSettingsForm({
         currencyCode,
         taxPercent: Number(taxPercent),
         serviceChargePercent: Number(servicePercent),
-        allowWaiterCloseTable: allowWaiterClose
+        allowWaiterCloseTable: allowWaiterClose,
+        language
       });
 
       if (!result.success) {
@@ -46,7 +54,7 @@ export function RestaurantSettingsForm({
         return;
       }
 
-      toast.success("Settings updated");
+      toast.success(l(language, "Settings updated", "Configuración actualizada"));
       router.refresh();
     });
   }
@@ -54,20 +62,20 @@ export function RestaurantSettingsForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Restaurant Settings</CardTitle>
+        <CardTitle>{l(locale, "Restaurant Settings", "Configuración del restaurante")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>Name</Label>
+          <Label>{l(locale, "Name", "Nombre")}</Label>
           <Input value={name} onChange={(e) => setName(e.target.value)} />
         </div>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-4">
           <div className="space-y-2">
-            <Label>Currency</Label>
+            <Label>{l(locale, "Currency", "Moneda")}</Label>
             <Input value={currencyCode} onChange={(e) => setCurrencyCode(e.target.value.toUpperCase())} />
           </div>
           <div className="space-y-2">
-            <Label>Tax %</Label>
+            <Label>{l(locale, "Tax %", "Impuesto %")}</Label>
             <Input
               type="number"
               value={taxPercent}
@@ -75,12 +83,19 @@ export function RestaurantSettingsForm({
             />
           </div>
           <div className="space-y-2">
-            <Label>Service %</Label>
+            <Label>{l(locale, "Service %", "Servicio %")}</Label>
             <Input
               type="number"
               value={servicePercent}
               onChange={(e) => setServicePercent(e.target.value)}
             />
+          </div>
+          <div className="space-y-2">
+            <Label>{l(locale, "Language", "Idioma")}</Label>
+            <Select value={language} onChange={(e) => setLanguage(e.target.value as Locale)}>
+              <option value="en">{l(locale, "English", "Inglés")}</option>
+              <option value="es">{l(locale, "Spanish", "Español")}</option>
+            </Select>
           </div>
         </div>
         <label className="flex items-center gap-2 text-sm font-medium">
@@ -89,10 +104,10 @@ export function RestaurantSettingsForm({
             checked={allowWaiterClose}
             onChange={(e) => setAllowWaiterClose(e.target.checked)}
           />
-          Allow waiters to close tables
+          {l(locale, "Allow waiters to close tables", "Permitir que meseros cierren mesas")}
         </label>
         <Button onClick={submit} disabled={isPending}>
-          Save settings
+          {l(locale, "Save settings", "Guardar configuración")}
         </Button>
       </CardContent>
     </Card>
@@ -101,10 +116,12 @@ export function RestaurantSettingsForm({
 
 export function StaffManagementTable({
   restaurantId,
-  staff
+  staff,
+  locale
 }: {
   restaurantId: string;
   staff: Array<{ user_id: string; full_name: string; role: string; active: boolean }>;
+  locale: Locale;
 }) {
   const [isPending, startTransition] = useTransition();
 
@@ -112,23 +129,23 @@ export function StaffManagementTable({
     startTransition(async () => {
       const result = await updateStaffRole({ userId, restaurantId, role, active });
       if (!result.success) toast.error(result.error);
-      else toast.success("Staff updated");
+      else toast.success(l(locale, "Staff updated", "Personal actualizado"));
     });
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Staff Management</CardTitle>
+        <CardTitle>{l(locale, "Staff Management", "Gestión de personal")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="overflow-auto rounded-xl border">
           <table className="w-full min-w-[760px] text-sm">
             <thead className="bg-muted/50 text-left">
               <tr>
-                <th className="px-3 py-2">Name</th>
-                <th className="px-3 py-2">Role</th>
-                <th className="px-3 py-2">Active</th>
+                <th className="px-3 py-2">{l(locale, "Name", "Nombre")}</th>
+                <th className="px-3 py-2">{l(locale, "Role", "Rol")}</th>
+                <th className="px-3 py-2">{l(locale, "Active", "Activo")}</th>
               </tr>
             </thead>
             <tbody>
@@ -142,11 +159,11 @@ export function StaffManagementTable({
                       onChange={(e) => updateRole(member.user_id, e.target.value, member.active)}
                       disabled={isPending}
                     >
-                      <option value="manager">Manager</option>
-                      <option value="waiter">Waiter</option>
-                      <option value="kitchen">Kitchen</option>
-                      <option value="cashier">Cashier</option>
-                      <option value="super_admin">Super Admin</option>
+                      <option value="manager">{roleLabel(locale, "manager" as UserRole)}</option>
+                      <option value="waiter">{roleLabel(locale, "waiter" as UserRole)}</option>
+                      <option value="kitchen">{roleLabel(locale, "kitchen" as UserRole)}</option>
+                      <option value="cashier">{roleLabel(locale, "cashier" as UserRole)}</option>
+                      <option value="super_admin">{roleLabel(locale, "super_admin" as UserRole)}</option>
                     </select>
                   </td>
                   <td className="px-3 py-2">

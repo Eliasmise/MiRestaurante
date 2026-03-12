@@ -2,6 +2,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { ReportsDashboard } from "@/components/reports/reports-dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getUserContextOrThrow, requireRoles } from "@/lib/auth";
+import { l } from "@/lib/i18n";
 import { getReportsData } from "@/lib/queries/reports";
 
 export default async function ReportsPage({
@@ -29,12 +30,12 @@ export default async function ReportsPage({
   return (
     <AppShell
       context={context}
-      title="Executive Reporting Suite"
-      subtitle="Polished financial and operational intelligence"
+      title={l(context.locale, "Executive Reporting Suite", "Suite ejecutiva de reportes")}
+      subtitle={l(context.locale, "Polished financial and operational intelligence", "Inteligencia financiera y operativa")}
     >
       <Card className="mb-4 border-[#d5c39f] bg-gradient-to-r from-[#faf3e7] to-[#f5f8fc]">
         <CardHeader className="pb-2">
-          <CardTitle>Filters</CardTitle>
+          <CardTitle>{l(context.locale, "Filters", "Filtros")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form className="grid gap-3 md:grid-cols-4" method="GET">
@@ -55,20 +56,20 @@ export default async function ReportsPage({
               defaultValue={params.payment ?? ""}
               className="h-10 rounded-xl border border-input bg-white/85 px-3 text-sm"
             >
-              <option value="">All payments</option>
-              <option value="cash">Cash</option>
-              <option value="card">Card</option>
-              <option value="transfer">Transfer</option>
-              <option value="other">Other</option>
+              <option value="">{l(context.locale, "All payments", "Todos los pagos")}</option>
+              <option value="cash">{l(context.locale, "Cash", "Efectivo")}</option>
+              <option value="card">{l(context.locale, "Card", "Tarjeta")}</option>
+              <option value="transfer">{l(context.locale, "Transfer", "Transferencia")}</option>
+              <option value="other">{l(context.locale, "Other", "Otro")}</option>
             </select>
             <button className="h-10 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground">
-              Apply
+              {l(context.locale, "Apply", "Aplicar")}
             </button>
           </form>
         </CardContent>
       </Card>
 
-      <ReportsDashboard {...data} />
+      <ReportsDashboard {...data} locale={context.locale} />
     </AppShell>
   );
 }

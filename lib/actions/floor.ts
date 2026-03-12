@@ -9,7 +9,7 @@ import { floorLayoutSchema, waiterAssignmentSchema } from "@/lib/validators/floo
 export async function saveFloorLayout(input: unknown) {
   const parsed = floorLayoutSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid floor payload" };
+    return { success: false as const, error: "Invalid floor payload / Payload de salón inválido" };
   }
 
   const context = await getUserContextOrThrow();
@@ -69,7 +69,7 @@ export async function saveFloorLayout(input: unknown) {
 export async function assignWaiterToTable(input: unknown) {
   const parsed = waiterAssignmentSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false as const, error: "Invalid assignment payload" };
+    return { success: false as const, error: "Invalid assignment payload / Payload de asignación inválido" };
   }
 
   const context = await getUserContextOrThrow();
