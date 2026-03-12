@@ -93,7 +93,7 @@ export function CheckoutBoard({
 
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className="interactive-elevate">
         <CardHeader className="pb-3">
           <CardTitle>Open Checks</CardTitle>
         </CardHeader>
@@ -103,16 +103,16 @@ export function CheckoutBoard({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="stagger-list mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {filtered.map((order) => (
               <button
                 key={order.id}
                 onClick={() => openCheckout(order.id)}
-                className="rounded-xl border bg-white p-4 text-left transition hover:border-primary hover:shadow"
+                className="rounded-xl border border-[#e4d8c5] bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-primary hover:shadow-soft"
               >
                 <div className="flex items-center justify-between gap-2">
                   <p className="font-semibold">#{order.order_number}</p>
-                  <span className="rounded-full bg-muted px-2 py-0.5 text-xs capitalize">
+                  <span className="rounded-full bg-[#f8efe0] px-2 py-0.5 text-xs capitalize text-[#7b613a]">
                     {order.status.replaceAll("_", " ")}
                   </span>
                 </div>
@@ -120,7 +120,7 @@ export function CheckoutBoard({
                   Table {order.floor_table?.table_code} · {order.floor_table?.display_name}
                 </p>
                 <p className="text-sm text-muted-foreground">Waiter: {order.waiter?.full_name ?? "-"}</p>
-                <p className="mt-3 text-lg font-semibold text-primary">{formatMoney(Number(order.total))}</p>
+                <p className="mt-3 text-lg font-semibold text-[#1f2d43]">{formatMoney(Number(order.total))}</p>
               </button>
             ))}
           </div>
@@ -136,7 +136,7 @@ export function CheckoutBoard({
       >
         {selectedOrder ? (
           <div className="space-y-4">
-            <div className="rounded-xl bg-muted/40 p-3">
+            <div className="rounded-xl border border-[#dbc9ad] bg-[#faf3e7] p-3">
               <p className="text-sm text-muted-foreground">Table</p>
               <p className="font-medium">
                 {selectedOrder.floor_table?.table_code} · {selectedOrder.floor_table?.display_name}

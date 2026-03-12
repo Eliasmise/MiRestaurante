@@ -19,10 +19,10 @@ export function Dialog({ open, onOpenChange, title, children }: DialogProps) {
       <div className="absolute inset-0" onClick={() => onOpenChange(false)} />
       <div
         className={cn(
-          "relative z-10 w-full max-w-xl rounded-2xl border bg-card p-5 shadow-2xl"
+          "relative z-10 w-full max-w-xl rise-in rounded-2xl border border-white/70 bg-card/95 p-5 shadow-luxe"
         )}
       >
-        <h2 className="mb-4 text-lg font-semibold">{title}</h2>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight">{title}</h2>
         {children}
       </div>
     </div>

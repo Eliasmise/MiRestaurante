@@ -76,50 +76,50 @@ export function ReportsDashboard({
         <StatCard label="Avg Ticket" value={formatMoney(averageTicket)} />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Card>
+      <div className="stagger-list grid gap-4 xl:grid-cols-2">
+        <Card className="interactive-elevate overflow-hidden">
           <CardHeader>
             <CardTitle>Sales by Day</CardTitle>
           </CardHeader>
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={salesByDay}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#d7c6a7" />
+                <XAxis dataKey="date" tick={{ fill: "#7a6649", fontSize: 11 }} />
                 <YAxis />
                 <Tooltip formatter={(v) => formatMoney(Number(v))} />
-                <Line type="monotone" dataKey="total" stroke="#0284c7" strokeWidth={2.5} />
+                <Line type="monotone" dataKey="total" stroke="#184270" strokeWidth={2.7} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="interactive-elevate overflow-hidden">
           <CardHeader>
             <CardTitle>Sales by Hour</CardTitle>
           </CardHeader>
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={salesByHour}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="hour" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#d7c6a7" />
+                <XAxis dataKey="hour" tick={{ fill: "#7a6649", fontSize: 11 }} />
                 <YAxis />
                 <Tooltip formatter={(v) => formatMoney(Number(v))} />
-                <Bar dataKey="total" fill="#0d9488" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="total" fill="#aa7e45" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-3">
-        <Card>
+      <div className="stagger-list grid gap-4 xl:grid-cols-3">
+        <Card className="interactive-elevate">
           <CardHeader>
             <CardTitle>Top Selling Items</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {itemSales.slice(0, 8).map((item) => (
-              <div key={item.name} className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm">
+              <div key={item.name} className="flex items-center justify-between rounded-lg border border-[#e4d8c5] bg-white/80 px-3 py-2 text-sm">
                 <div>
                   <p className="font-medium">{item.name}</p>
                   <p className="text-xs text-muted-foreground">{item.quantity} sold</p>
@@ -130,13 +130,13 @@ export function ReportsDashboard({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="interactive-elevate">
           <CardHeader>
             <CardTitle>Sales by Category</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {categorySales.slice(0, 8).map((item) => (
-              <div key={item.category} className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm">
+              <div key={item.category} className="flex items-center justify-between rounded-lg border border-[#e4d8c5] bg-white/80 px-3 py-2 text-sm">
                 <span className="font-medium">{item.category}</span>
                 <span>{formatMoney(item.total)}</span>
               </div>
@@ -144,13 +144,13 @@ export function ReportsDashboard({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="interactive-elevate">
           <CardHeader>
             <CardTitle>Sales by Waiter</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {salesByWaiter.slice(0, 8).map((item) => (
-              <div key={item.waiter} className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm">
+              <div key={item.waiter} className="flex items-center justify-between rounded-lg border border-[#e4d8c5] bg-white/80 px-3 py-2 text-sm">
                 <span className="font-medium">{item.waiter}</span>
                 <span>{formatMoney(item.total)}</span>
               </div>
@@ -159,18 +159,18 @@ export function ReportsDashboard({
         </Card>
       </div>
 
-      <Card>
+      <Card className="interactive-elevate">
         <CardHeader>
           <CardTitle>Closed Orders</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-auto rounded-xl border">
+          <div className="luxury-scroll overflow-auto rounded-xl border border-[#dbcdb5]">
             <table className="w-full min-w-[640px] text-sm">
-              <thead className="bg-muted/50">
+              <thead className="bg-[#f8efe0]">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
-                      <th key={header.id} className="px-3 py-2 text-left font-medium">
+                      <th key={header.id} className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.13em] text-[#846641]">
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -184,7 +184,7 @@ export function ReportsDashboard({
               </thead>
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-t">
+                  <tr key={row.id} className="border-t border-[#ebdfcd] bg-white/70 hover:bg-[#fff8eb]">
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="px-3 py-2">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

@@ -81,18 +81,21 @@ export function KitchenBoard({ restaurantId, items }: { restaurantId: string; it
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <div className="stagger-list grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {grouped.map((ticket) => {
         const overdue = ticket.oldest
           ? Date.now() - new Date(ticket.oldest).getTime() > 1000 * 60 * 20
           : false;
 
         return (
-          <Card key={ticket.orderId} className={overdue ? "kitchen-overdue" : undefined}>
+          <Card
+            key={ticket.orderId}
+            className={`interactive-elevate ${overdue ? "kitchen-overdue border-rose-300" : ""}`}
+          >
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <CardTitle>Order #{ticket.orderNumber}</CardTitle>
+                  <CardTitle className="text-[#1f2d43]">Order #{ticket.orderNumber}</CardTitle>
                   <p className="text-sm text-muted-foreground">
                     Table {ticket.tableCode} · Waiter {ticket.waiterName}
                   </p>
@@ -106,7 +109,7 @@ export function KitchenBoard({ restaurantId, items }: { restaurantId: string; it
 
             <CardContent className="space-y-2">
               {ticket.items.map((item) => (
-                <div key={item.id} className="rounded-xl border bg-white p-3">
+                <div key={item.id} className="interactive-elevate rounded-xl border border-[#e4d8c5] bg-white/90 p-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="font-medium">
@@ -126,7 +129,7 @@ export function KitchenBoard({ restaurantId, items }: { restaurantId: string; it
                         onClick={() => moveTo(item.id, "preparing")}
                         disabled={isPending}
                       >
-                        Start
+                        Start Prep
                       </Button>
                     ) : null}
                     {item.status === "preparing" ? (

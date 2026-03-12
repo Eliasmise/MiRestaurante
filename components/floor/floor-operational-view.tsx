@@ -13,14 +13,14 @@ import { cn } from "@/lib/utils";
 import type { FloorTable, TableStatus, UserRole } from "@/lib/types";
 
 const statusClass: Record<string, string> = {
-  available: "bg-emerald-100 border-emerald-300",
-  occupied: "bg-orange-100 border-orange-300",
-  ordering: "bg-sky-100 border-sky-300",
-  sent_to_kitchen: "bg-indigo-100 border-indigo-300",
-  in_preparation: "bg-amber-100 border-amber-300",
-  ready: "bg-emerald-200 border-emerald-400",
-  needs_payment: "bg-rose-100 border-rose-300",
-  closed: "bg-slate-200 border-slate-300"
+  available: "bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-300",
+  occupied: "bg-gradient-to-br from-orange-50 to-orange-100 border-orange-300",
+  ordering: "bg-gradient-to-br from-sky-50 to-sky-100 border-sky-300",
+  sent_to_kitchen: "bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-300",
+  in_preparation: "bg-gradient-to-br from-amber-50 to-amber-100 border-amber-300",
+  ready: "bg-gradient-to-br from-teal-100 to-emerald-100 border-teal-400",
+  needs_payment: "animate-pulseRing bg-gradient-to-br from-rose-50 to-rose-100 border-rose-400",
+  closed: "bg-gradient-to-br from-slate-100 to-slate-200 border-slate-300"
 };
 
 interface FloorOperationalViewProps {
@@ -55,9 +55,16 @@ export function FloorOperationalView({
       .filter((table) => (showMineOnly ? table.assigned_waiter_id === userId : true));
   }, [currentFloor?.id, showMineOnly, tables, userId]);
 
+  const byStatus = useMemo(() => {
+    return visibleTables.reduce<Record<string, number>>((acc, table) => {
+      acc[table.status] = (acc[table.status] ?? 0) + 1;
+      return acc;
+    }, {});
+  }, [visibleTables]);
+
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className="interactive-elevate overflow-hidden">
         <CardHeader className="pb-2">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <CardTitle className="flex items-center gap-2">
@@ -89,7 +96,7 @@ export function FloorOperationalView({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-3 flex flex-wrap gap-2">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
             {[
               "available",
               "occupied",
@@ -101,10 +108,36 @@ export function FloorOperationalView({
             ].map((status) => (
               <StatusPill key={status} status={status as TableStatus} />
             ))}
+            <span className="ml-auto rounded-full bg-[#f8efe0] px-3 py-1 text-xs font-semibold text-[#7b613a]">
+              {visibleTables.length} visible tables
+            </span>
+          </div>
+
+          <div className="stagger-list mb-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="interactive-elevate rounded-xl border border-white/80 bg-white/70 p-3">
+              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Available</p>
+              <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">{byStatus.available ?? 0}</p>
+            </div>
+            <div className="interactive-elevate rounded-xl border border-white/80 bg-white/70 p-3">
+              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">In Service</p>
+              <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">
+                {(byStatus.occupied ?? 0) + (byStatus.ordering ?? 0) + (byStatus.sent_to_kitchen ?? 0)}
+              </p>
+            </div>
+            <div className="interactive-elevate rounded-xl border border-white/80 bg-white/70 p-3">
+              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Kitchen Active</p>
+              <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">
+                {(byStatus.in_preparation ?? 0) + (byStatus.ready ?? 0)}
+              </p>
+            </div>
+            <div className="interactive-elevate rounded-xl border border-white/80 bg-white/70 p-3">
+              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Needs Payment</p>
+              <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">{byStatus.needs_payment ?? 0}</p>
+            </div>
           </div>
 
           <div
-            className="floor-grid relative w-full overflow-auto rounded-2xl border bg-white"
+            className="floor-grid luxury-scroll relative w-full overflow-auto rounded-2xl border border-[#dbcdb5] bg-white/90"
             style={{
               minHeight: Math.max(620, currentFloor?.height ?? 620),
               maxHeight: "75vh"
@@ -121,7 +154,7 @@ export function FloorOperationalView({
                 <button
                   key={table.id}
                   className={cn(
-                    "absolute flex flex-col items-center justify-center border-2 p-2 text-center shadow-sm transition hover:scale-[1.02] hover:shadow-lg",
+                    "absolute flex flex-col items-center justify-center border-2 p-2 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-luxe",
                     statusClass[table.status] ?? "bg-white border-slate-200",
                     table.shape === "circle" && "rounded-full",
                     table.shape === "square" && "rounded-xl",
@@ -135,9 +168,9 @@ export function FloorOperationalView({
                   }}
                   onClick={() => router.push(`/orders/${table.id}`)}
                 >
-                  <span className="text-base font-semibold">{table.table_code}</span>
-                  <span className="line-clamp-1 text-xs text-slate-600">{table.display_name}</span>
-                  <span className="text-[11px] text-slate-500">{table.assigned_waiter_name ?? "Unassigned"}</span>
+                  <span className="text-base font-semibold text-[#1f2d43]">{table.table_code}</span>
+                  <span className="line-clamp-1 text-xs text-slate-700">{table.display_name}</span>
+                  <span className="text-[11px] text-slate-600">{table.assigned_waiter_name ?? "Unassigned"}</span>
                 </button>
               ))}
             </div>

@@ -150,11 +150,11 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-      <Card>
+    <div className="stagger-list grid gap-4 lg:grid-cols-[1fr_320px]">
+      <Card className="interactive-elevate overflow-hidden">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between gap-2">
-            <CardTitle>{floor.name} Layout</CardTitle>
+            <CardTitle>{floor.name} Layout Studio</CardTitle>
             <div className="flex gap-2">
               <Button variant="outline" onClick={addTable}>
                 <Plus className="h-4 w-4" />
@@ -168,9 +168,9 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
           </div>
         </CardHeader>
         <CardContent>
-          <div className="floor-grid overflow-auto rounded-2xl border bg-white p-4">
+          <div className="floor-grid luxury-scroll overflow-auto rounded-2xl border border-[#dbcdb5] bg-white/90 p-4">
             <div
-              className="relative rounded-xl border border-dashed border-slate-300 bg-slate-50"
+              className="relative rounded-xl border border-dashed border-[#c3ac85] bg-[#faf6ef]"
               style={{ width: floor.width, height: floor.height }}
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
@@ -181,10 +181,10 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
                   onPointerDown={(event) => onPointerDown(event, table.id)}
                   onClick={() => setSelectedId(table.id)}
                   className={cn(
-                    "absolute border-2 bg-white text-center text-xs font-medium shadow-sm transition",
+                    "absolute border-2 bg-white/95 text-center text-xs font-medium shadow-sm transition hover:-translate-y-0.5",
                     selectedId === table.id
-                      ? "border-primary shadow-lg"
-                      : "border-slate-300 hover:border-slate-500",
+                      ? "border-primary shadow-luxe"
+                      : "border-slate-300 hover:border-[#967849]",
                     table.shape === "circle" && "rounded-full",
                     table.shape === "square" && "rounded-xl",
                     table.shape === "rectangle" && "rounded-xl"
@@ -196,7 +196,7 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
                     height: table.height
                   }}
                 >
-                  <span className="block text-sm font-semibold">{table.table_code}</span>
+                  <span className="block text-sm font-semibold text-[#1f2d43]">{table.table_code}</span>
                   <span className="text-[11px] text-muted-foreground">{table.display_name}</span>
                 </button>
               ))}
@@ -205,7 +205,7 @@ export function FloorEditor({ restaurantId, floor, initialTables }: FloorEditorP
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="interactive-elevate">
         <CardHeader>
           <CardTitle>Table Properties</CardTitle>
         </CardHeader>

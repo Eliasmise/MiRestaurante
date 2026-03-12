@@ -32,11 +32,37 @@ export default async function DashboardPage() {
   return (
     <AppShell
       context={context}
-      title="Service Dashboard"
-      subtitle="Snapshot of current floor activity and sales"
+      title="Executive Service Dashboard"
+      subtitle="Premium control room for live hospitality performance"
     >
-      <div className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="space-y-5">
+        <Card className="overflow-hidden border-[#d3c1a1] bg-gradient-to-br from-[#f9f4ea] via-white to-[#eef3f9]">
+          <CardContent className="grid gap-5 p-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+            <div>
+              <p className="text-xs uppercase tracking-[0.24em] text-[#8a7046]">Today&apos;s Service Intelligence</p>
+              <h2 className="mt-3 text-4xl leading-tight text-[#1f2d43]">
+                Keep every shift sharp,
+                <br />
+                calm, and profitable.
+              </h2>
+              <p className="mt-3 max-w-xl text-sm text-muted-foreground">
+                Monitor real-time tables, kitchen throughput, and cash flow from one refined command center designed for high-pressure service.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-white/85 bg-white/75 p-4">
+                <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Revenue today</p>
+                <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">{formatMoney(metrics.totalToday)}</p>
+              </div>
+              <div className="rounded-xl border border-white/85 bg-white/75 p-4">
+                <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Open checks</p>
+                <p className="mt-1 text-2xl font-semibold text-[#1f2d43]">{metrics.openOrders}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="stagger-list grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <StatCard label="Open Orders" value={`${metrics.openOrders}`} hint="Live across devices" />
           <StatCard label="Today Sales" value={formatMoney(metrics.totalToday)} />
           <StatCard
@@ -51,27 +77,27 @@ export default async function DashboardPage() {
           />
         </div>
 
-        <div className="grid gap-4 xl:grid-cols-[1.25fr_1fr]">
-          <Card>
+        <div className="stagger-list grid gap-4 xl:grid-cols-[1.25fr_1fr]">
+          <Card className="interactive-elevate overflow-hidden">
             <CardHeader className="pb-3">
               <CardTitle>Active Tables</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="overflow-auto rounded-xl border">
+              <div className="luxury-scroll overflow-auto rounded-xl border border-[#dbcdb5]">
                 <table className="w-full min-w-[680px] text-sm">
-                  <thead className="bg-muted/40 text-left">
+                  <thead className="bg-[#f8efe0] text-left">
                     <tr>
-                      <th className="px-3 py-2">Table</th>
-                      <th className="px-3 py-2">Status</th>
-                      <th className="px-3 py-2">Waiter</th>
-                      <th className="px-3 py-2">Action</th>
+                      <th className="px-3 py-2 text-xs uppercase tracking-[0.14em] text-[#82653f]">Table</th>
+                      <th className="px-3 py-2 text-xs uppercase tracking-[0.14em] text-[#82653f]">Status</th>
+                      <th className="px-3 py-2 text-xs uppercase tracking-[0.14em] text-[#82653f]">Waiter</th>
+                      <th className="px-3 py-2 text-xs uppercase tracking-[0.14em] text-[#82653f]">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {floorData.tables
                       .filter((table) => table.is_active)
                       .map((table) => (
-                        <tr key={table.id} className="border-t">
+                        <tr key={table.id} className="border-t border-[#ebdfcd] bg-white/70 hover:bg-[#fff8eb]">
                           <td className="px-3 py-2 font-medium">
                             {table.table_code} · {table.display_name}
                           </td>
@@ -95,9 +121,9 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="interactive-elevate">
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle>Operator Shortcuts</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-2">
               <Link href="/floor" className={buttonVariants({ variant: "default" })}>

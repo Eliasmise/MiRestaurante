@@ -53,7 +53,18 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)"
       },
       boxShadow: {
-        soft: "0 10px 30px -15px rgba(12, 35, 64, 0.4)"
+        soft: "0 18px 36px -24px rgba(26, 31, 49, 0.46)",
+        luxe: "0 24px 70px -35px rgba(24, 66, 112, 0.45)",
+        insetGlow: "inset 0 1px 0 rgba(255,255,255,0.7)"
+      },
+      keyframes: {
+        pulseRing: {
+          "0%": { boxShadow: "0 0 0 0 rgba(24,66,112,0.36)" },
+          "100%": { boxShadow: "0 0 0 18px rgba(24,66,112,0)" }
+        }
+      },
+      animation: {
+        pulseRing: "pulseRing 2s ease-in-out infinite"
       }
     }
   },

@@ -29,10 +29,10 @@ export default async function ReportsPage({
   return (
     <AppShell
       context={context}
-      title="Sales Reports"
-      subtitle="Operational and executive reporting"
+      title="Executive Reporting Suite"
+      subtitle="Polished financial and operational intelligence"
     >
-      <Card className="mb-4">
+      <Card className="mb-4 border-[#d5c39f] bg-gradient-to-r from-[#faf3e7] to-[#f5f8fc]">
         <CardHeader className="pb-2">
           <CardTitle>Filters</CardTitle>
         </CardHeader>
@@ -42,18 +42,18 @@ export default async function ReportsPage({
               type="date"
               name="from"
               defaultValue={params.from?.slice(0, 10)}
-              className="h-10 rounded-xl border border-input bg-background px-3 text-sm"
+              className="h-10 rounded-xl border border-input bg-white/85 px-3 text-sm"
             />
             <input
               type="date"
               name="to"
               defaultValue={params.to?.slice(0, 10)}
-              className="h-10 rounded-xl border border-input bg-background px-3 text-sm"
+              className="h-10 rounded-xl border border-input bg-white/85 px-3 text-sm"
             />
             <select
               name="payment"
               defaultValue={params.payment ?? ""}
-              className="h-10 rounded-xl border border-input bg-background px-3 text-sm"
+              className="h-10 rounded-xl border border-input bg-white/85 px-3 text-sm"
             >
               <option value="">All payments</option>
               <option value="cash">Cash</option>

@@ -210,7 +210,7 @@ export function TableOrderWorkspace({
 
   return (
     <div className="grid gap-4 xl:grid-cols-[1.1fr_1fr]">
-      <Card>
+      <Card className="interactive-elevate overflow-hidden">
         <CardHeader className="pb-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -222,15 +222,15 @@ export function TableOrderWorkspace({
             <StatusPill status={table.status as TableStatus} />
           </div>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 luxury-scroll">
           {items.length === 0 ? (
-            <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
+            <div className="rounded-xl border border-dashed border-[#cfb487] bg-[#faf2e5] p-6 text-center text-sm text-muted-foreground">
               No items yet. Tap a menu item on the right to start this table.
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="stagger-list space-y-2">
               {items.map((item) => (
-                <div key={item.id} className="rounded-xl border bg-white p-3">
+                <div key={item.id} className="interactive-elevate rounded-xl border border-[#e4d8c5] bg-white/90 p-3">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="font-medium">
@@ -285,7 +285,7 @@ export function TableOrderWorkspace({
             </div>
           )}
 
-          <div className="rounded-xl bg-muted/40 p-4">
+          <div className="rounded-xl border border-[#dbc9ad] bg-[#faf3e7] p-4">
             <div className="grid gap-1 text-sm">
               <div className="flex items-center justify-between">
                 <span>Subtotal</span>
@@ -306,7 +306,7 @@ export function TableOrderWorkspace({
             </div>
           </div>
 
-          <div className="sticky bottom-0 z-10 rounded-xl border bg-white/90 p-3 backdrop-blur">
+          <div className="sticky bottom-0 z-10 rounded-xl border border-[#d4c2a6] bg-[#fffaf1]/95 p-3 backdrop-blur">
             <div className="flex flex-wrap gap-2">
               <Button className="flex-1" onClick={onSendDraft} disabled={!order || draftItems.length === 0 || isPending}>
                 <Send className="h-4 w-4" />
@@ -325,13 +325,13 @@ export function TableOrderWorkspace({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="interactive-elevate overflow-hidden">
         <CardHeader className="pb-3">
           <CardTitle className="text-xl">Add Items</CardTitle>
           <p className="text-sm text-muted-foreground">Large touch targets for rapid ordering</p>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="flex gap-2 overflow-x-auto pb-1">
+          <div className="luxury-scroll flex gap-2 overflow-x-auto pb-1">
             {categories.map((category) => (
               <Button
                 key={category.id}
@@ -346,7 +346,7 @@ export function TableOrderWorkspace({
             ))}
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-1">
+          <div className="luxury-scroll flex gap-2 overflow-x-auto pb-1">
             <Button
               size="sm"
               variant={selectedSubcategory === "all" ? "default" : "outline"}
@@ -366,18 +366,18 @@ export function TableOrderWorkspace({
             ))}
           </div>
 
-          <div className="grid max-h-[62vh] grid-cols-1 gap-2 overflow-y-auto pr-1 md:grid-cols-2">
+          <div className="luxury-scroll stagger-list grid max-h-[62vh] grid-cols-1 gap-2 overflow-y-auto pr-1 md:grid-cols-2">
             {visibleMenuItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setSelectedItemId(item.id)}
-                className="rounded-xl border bg-white p-3 text-left transition hover:border-primary hover:shadow"
+                className="rounded-xl border border-[#e4d8c5] bg-white p-3 text-left transition hover:-translate-y-0.5 hover:border-primary hover:shadow-soft"
               >
                 <p className="text-sm font-semibold">{item.name}</p>
                 <p className="line-clamp-2 min-h-[2.5rem] text-xs text-muted-foreground">
                   {item.description ?? "No description"}
                 </p>
-                <p className="mt-2 text-base font-semibold text-primary">{formatMoney(Number(item.price))}</p>
+                <p className="mt-2 text-base font-semibold text-[#1f2d43]">{formatMoney(Number(item.price))}</p>
               </button>
             ))}
           </div>
@@ -410,7 +410,7 @@ export function TableOrderWorkspace({
               </div>
             </div>
 
-            <div className="max-h-52 space-y-3 overflow-y-auto rounded-xl border p-3">
+            <div className="luxury-scroll max-h-52 space-y-3 overflow-y-auto rounded-xl border border-[#decfaf] bg-[#fdf9f2] p-3">
               {groups.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No modifiers for this item.</p>
               ) : (

@@ -36,11 +36,11 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md border-white/60 bg-white/95 backdrop-blur">
+    <Card className="w-full max-w-md rise-in border-white/80 bg-white/90 shadow-luxe">
       <CardHeader>
-        <CardTitle className="text-2xl">Restaurant Ops</CardTitle>
+        <CardTitle className="text-3xl text-[#1f2d43]">Welcome Back</CardTitle>
         <CardDescription>
-          Sign in to continue service and operations.
+          Access your hospitality control center.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -69,9 +69,9 @@ export function LoginForm() {
           </div>
           <Button className="w-full" size="lg" type="submit" disabled={loading}>
             {loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : null}
-            Login
+            Enter Platform
           </Button>
-          <p className="text-xs text-muted-foreground">
+          <p className="rounded-lg bg-[#f9f1e2] px-3 py-2 text-xs text-[#6e5738]">
             Demo manager: manager@demo-resto.com / Demo1234!
           </p>
         </form>
